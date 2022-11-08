@@ -1,0 +1,12 @@
+{
+  "name": "b6a11-service-review-server-side-abhsn",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:Porgramming-Hero-web-course/b6a11-service-review-server-side-abhsn.git",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "Abid Hasan",
+  "license": "GPL-3.0+"
+}
