@@ -23,6 +23,10 @@ async function crudOperation() {
       const cursor = serviceCollection.find(query).limit(limit);
       const services = await cursor.toArray();
       res.send(services);
+    } else {
+      const cursor = serviceCollection.find(query);
+      const services = await cursor.toArray();
+      res.send(services);
     }
   });
 
