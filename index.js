@@ -14,6 +14,23 @@ app.get('/', (req, res) => {
 
 const client = new MongoClient(process.env.MONGO_URI);
 
+const verifyJWT = (req, res, next) => {
+	const authHeader = req.headers.authorization;
+	if (!authHeader) {
+		res.status(401).send({ message: 'Unauthorized Access' });
+	} else {
+		const token = req.headers.authorization.split(' ')[1];
+		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+			if (!err) {
+				req.decoded = decoded;
+				next();
+			} else {
+				res.status(401).send({ message: 'Unauthorized Access' });
+			}
+		});
+	}
+};
+
 async function crudOperation() {
 	const serviceCollection = client.db("service-review").collection("service-list");
 	const reviewCollection = client.db("service-review").collection("reviews");
@@ -58,6 +75,20 @@ async function crudOperation() {
 		const user = req.body;
 		const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "7d" })
 		res.send({ token });
+	});
+
+	app.get('/my-reviews/:id', verifyJWT, async (req, res) => {
+		const id = req.params.id;
+		const query = { uid: id };
+		const cursor = reviewCollection.find(query);
+		const reviews = await cursor.toArray();
+		res.send(reviews);
+	});
+
+	app.put('/edit-review/:id', async (req, res) => {
+		const decoded = req.decoded;
+		const id = req.params.id;
+		console.log(id);
 	});
 }
 
