@@ -31,7 +31,7 @@ async function crudOperation() {
 	});
 
 	app.get('/services/:id', async (req, res) => {
-		if (req.params.id.length !== 24) {
+		if (req.params.id.length !== 24 || !/^[a-fA-F0-9]+$/.test(req.params.id)) {
 			res.status(404).send('Not Found');
 		} else {
 			const query = { _id: ObjectId(req.params.id) };
