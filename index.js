@@ -35,20 +35,25 @@ async function crudOperation() {
 	const serviceCollection = client.db("service-review").collection("service-list");
 	const reviewCollection = client.db("service-review").collection("reviews");
 
+	// gets all services
 	app.get('/services', async (req, res) => {
 		const query = {};
 		const limit = 3;
+		// sends limited services
 		if (req.headers.isshort) {
 			const cursor = serviceCollection.find(query).limit(limit);
 			const services = await cursor.toArray();
 			res.send(services);
-		} else {
+		}
+		// sens full services
+		else {
 			const cursor = serviceCollection.find(query);
 			const services = await cursor.toArray();
 			res.send(services);
 		}
 	});
 
+	// gets service details
 	app.get('/services/:id', async (req, res) => {
 		if (req.params.id.length !== 24 || !/^[a-fA-F0-9]+$/.test(req.params.id)) {
 			res.status(404).send('Not Found');
@@ -63,6 +68,7 @@ async function crudOperation() {
 		}
 	});
 
+	// get reviews for specific service
 	app.get('/reviews/:id', async (req, res) => {
 		const id = req.params.id;
 		const query = { serviceId: id };
@@ -71,12 +77,14 @@ async function crudOperation() {
 		res.send(reviews);
 	});
 
+	// user gets jwt after a successful login
 	app.post('/jwt', (req, res) => {
 		const user = req.body;
 		const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "7d" })
 		res.send({ token });
 	});
 
+	// sends my reviews
 	app.get('/my-reviews/:id', verifyJWT, async (req, res) => {
 		const id = req.params.id;
 		const decoded = req.decoded;
@@ -90,6 +98,7 @@ async function crudOperation() {
 		}
 	});
 
+	// edit reviews
 	app.put('/edit-review/:id', verifyJWT, async (req, res) => {
 		const decoded = req.decoded;
 		const uid = req.headers.userid;
@@ -105,7 +114,22 @@ async function crudOperation() {
 			}
 			const result = await reviewCollection.updateOne(query, updateComment, options);
 			res.send(result);
-			console.log(result);
+		} else {
+			res.status(403).send({ message: 'Unauthorized Access' });
+		}
+	});
+
+	// users add review
+	app.post('/add-review', verifyJWT, async (req, res) => {
+		const decoded = req.decoded;
+		const uid = req.headers.uid;
+		const review = { ...req.body }
+		const date = new Date();
+		review.time = date.getTime();
+		console.log(review);
+		if (decoded.uid === uid) {
+			const result = await reviewCollection.insertOne(review);
+			res.send(result);
 		} else {
 			res.status(403).send({ message: 'Unauthorized Access' });
 		}
