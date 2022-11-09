@@ -1,6 +1,7 @@
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
+const jwt = require('jsonwebtoken');
 const port = 5000;
 
 require('dotenv').config();
@@ -51,6 +52,12 @@ async function crudOperation() {
 		const cursor = reviewCollection.find(query);
 		const reviews = await cursor.toArray();
 		res.send(reviews);
+	});
+
+	app.post('/jwt', (req, res) => {
+		const user = req.body;
+		const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "7d" })
+		res.send({ token });
 	});
 }
 
