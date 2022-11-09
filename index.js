@@ -79,16 +79,36 @@ async function crudOperation() {
 
 	app.get('/my-reviews/:id', verifyJWT, async (req, res) => {
 		const id = req.params.id;
-		const query = { uid: id };
-		const cursor = reviewCollection.find(query);
-		const reviews = await cursor.toArray();
-		res.send(reviews);
+		const decoded = req.decoded;
+		if (decoded.uid === id) {
+			const query = { uid: id };
+			const cursor = reviewCollection.find(query);
+			const reviews = await cursor.toArray();
+			res.send(reviews);
+		} else {
+			res.status(403).send({ message: 'Unauthorized Access' });
+		}
 	});
 
-	app.put('/edit-review/:id', async (req, res) => {
+	app.put('/edit-review/:id', verifyJWT, async (req, res) => {
 		const decoded = req.decoded;
-		const id = req.params.id;
-		console.log(id);
+		const uid = req.headers.userid;
+		const comment = req.body.newComment;
+		const commentId = req.body.commentId;
+		if (decoded.uid === uid) {
+			const query = { _id: ObjectId(commentId) };
+			const options = { upsert: true };
+			const updateComment = {
+				$set: {
+					comment: comment
+				}
+			}
+			const result = await reviewCollection.updateOne(query, updateComment, options);
+			res.send(result);
+			console.log(result);
+		} else {
+			res.status(403).send({ message: 'Unauthorized Access' });
+		}
 	});
 }
 
