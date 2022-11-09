@@ -15,6 +15,7 @@ const client = new MongoClient(process.env.MONGO_URI);
 
 async function crudOperation() {
 	const serviceCollection = client.db("service-review").collection("service-list");
+	const reviewCollection = client.db("service-review").collection("reviews");
 
 	app.get('/services', async (req, res) => {
 		const query = {};
@@ -42,6 +43,13 @@ async function crudOperation() {
 				res.status(404).send('Not Found');
 			}
 		}
+	});
+
+	app.get('/reviews', async (req, res) => {
+		const query = {};
+		const cursor = reviewCollection.find(query);
+		const reviews = await cursor.toArray();
+		res.send(reviews);
 	});
 }
 
