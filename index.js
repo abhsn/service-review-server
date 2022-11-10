@@ -126,7 +126,6 @@ async function crudOperation() {
 		const review = { ...req.body }
 		const date = new Date();
 		review.time = date.getTime();
-		console.log(review);
 		if (decoded.uid === uid) {
 			const result = await reviewCollection.insertOne(review);
 			res.send(result);
@@ -134,6 +133,20 @@ async function crudOperation() {
 			res.status(403).send({ message: 'Unauthorized Access' });
 		}
 	});
+
+	// users add service
+	app.post('/add-service', verifyJWT, async (req, res) => {
+		const decoded = req.decoded;
+		const uid = req.headers.uid;
+		const service = req.body
+		if (decoded.uid === uid) {
+			console.log(service);
+			const result = await serviceCollection.insertOne(service);
+			res.send(result);
+		} else {
+			res.status(403).send({ message: 'Unauthorized Access' });
+		}
+	})
 }
 
 crudOperation();
