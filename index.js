@@ -5,11 +5,12 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const port = 5000;
 
+app.use(cors());
+
 require('dotenv').config();
 
 app.use(express.json());
 
-app.use(cors());
 
 app.get('/', (req, res) => {
 	res.status(200).send('Service Review server is running...');
