@@ -70,9 +70,12 @@ async function crudOperation() {
 
 	// get reviews for specific service
 	app.get('/reviews/:id', async (req, res) => {
+		// console.log(req.headers);
 		const id = req.params.id;
 		const query = { serviceId: id };
-		const cursor = reviewCollection.find(query);
+		req.headers.descending === 'true' ? time = -1 : time = 1;
+		console.log(time);
+		const cursor = reviewCollection.find(query).sort({ time: time });
 		const reviews = await cursor.toArray();
 		res.send(reviews);
 	});
@@ -140,7 +143,6 @@ async function crudOperation() {
 		const uid = req.headers.uid;
 		const service = req.body
 		if (decoded.uid === uid) {
-			console.log(service);
 			const result = await serviceCollection.insertOne(service);
 			res.send(result);
 		} else {
