@@ -45,7 +45,7 @@ async function crudOperation() {
 			const services = await cursor.toArray();
 			res.send(services);
 		}
-		// sens full services
+		// sends full services
 		else {
 			const cursor = serviceCollection.find(query);
 			const services = await cursor.toArray();
@@ -74,7 +74,7 @@ async function crudOperation() {
 		const id = req.params.id;
 		const query = { serviceId: id };
 		req.headers.descending === 'true' ? time = -1 : time = 1;
-		console.log(time);
+		// console.log(time);
 		const cursor = reviewCollection.find(query).sort({ time: time });
 		const reviews = await cursor.toArray();
 		res.send(reviews);
@@ -116,6 +116,19 @@ async function crudOperation() {
 				}
 			}
 			const result = await reviewCollection.updateOne(query, updateComment, options);
+			res.send(result);
+		} else {
+			res.status(403).send({ message: 'Unauthorized Access' });
+		}
+	});
+
+	app.delete('/edit-review/:id', verifyJWT, async (req, res) => {
+		const decoded = req.decoded;
+		const uid = req.headers.userid;
+		const reviewId = req.params.id;
+		if (decoded.uid === uid) {
+			const query = { _id: ObjectId(reviewId) };
+			const result = await reviewCollection.deleteOne(query);
 			res.send(result);
 		} else {
 			res.status(403).send({ message: 'Unauthorized Access' });
