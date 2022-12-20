@@ -1,8 +1,8 @@
 {
-  "name": "b6a11-service-review-server-side-abhsn",
+  "name": "service-review-server",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:Porgramming-Hero-web-course/b6a11-service-review-server-side-abhsn.git",
+  "repository": "https://github.com/abhsn/service-review-server.git",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
@@ -13,6 +13,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "firebase-admin": "^11.4.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^4.11.0"
   },

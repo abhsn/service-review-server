@@ -3,6 +3,8 @@ const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const { initializeApp, applicationDefault } = require('firebase-admin/app');
+const {getAuth} = require('firebase-admin/auth');
 const port = 5000;
 
 app.use(cors());
@@ -11,10 +13,14 @@ require('dotenv').config();
 
 app.use(express.json());
 
-
 app.get('/', (req, res) => {
 	res.status(200).send('Service Review server is running...');
 });
+
+initializeApp({
+	credential: applicationDefault(),
+	projectId: 'service-review-22'
+})
 
 const client = new MongoClient(process.env.MONGO_URI);
 
@@ -24,14 +30,28 @@ const verifyJWT = (req, res, next) => {
 		res.status(401).send({ message: 'Unauthorized Access' });
 	} else {
 		const token = req.headers.authorization.split(' ')[1];
-		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-			if (!err) {
-				req.decoded = decoded;
-				next();
+
+		getAuth().verifyIdToken(token, true)
+		.then(payload => {
+			req.decoded = payload;
+			next();
+		})
+		.catch(err => {
+			if(err.code === 'auth/id-token-revoked') {
+				res.status(401).send({message:'Unauthorized Access'});
 			} else {
-				res.status(401).send({ message: 'Unauthorized Access' });
+				res.status(401).send({message:'Unauthorized Access'});
 			}
-		});
+		})
+
+//		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+//			if (!err) {
+//				req.decoded = decoded;
+//				next();
+//			} else {
+//				res.status(401).send({ message: 'Unauthorized Access' });
+//			}
+//		});
 	}
 };
 
