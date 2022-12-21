@@ -4,6 +4,7 @@ const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { initializeApp, applicationDefault } = require('firebase-admin/app');
+const admin = require('firebase-admin');
 const { getAuth } = require('firebase-admin/auth');
 const port = 5000;
 
@@ -17,8 +18,10 @@ app.get('/', (req, res) => {
 	res.status(200).send('Service Review server is running...');
 });
 
+const firebaseCredential = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+
 initializeApp({
-	credential: applicationDefault(),
+	credential: admin.credential.cert(firebaseCredential),
 	projectId: process.env.PROJECT_ID
 })
 
