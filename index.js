@@ -4,7 +4,7 @@ const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const { initializeApp, applicationDefault } = require('firebase-admin/app');
-const {getAuth} = require('firebase-admin/auth');
+const { getAuth } = require('firebase-admin/auth');
 const port = 5000;
 
 app.use(cors());
@@ -32,26 +32,26 @@ const verifyJWT = (req, res, next) => {
 		const token = req.headers.authorization.split(' ')[1];
 
 		getAuth().verifyIdToken(token, true)
-		.then(payload => {
-			req.decoded = payload;
-			next();
-		})
-		.catch(err => {
-			if(err.code === 'auth/id-token-revoked') {
-				res.status(401).send({message:'Unauthorized Access'});
-			} else {
-				res.status(401).send({message:'Unauthorized Access'});
-			}
-		})
+			.then(payload => {
+				req.decoded = payload;
+				next();
+			})
+			.catch(err => {
+				if (err.code === 'auth/id-token-revoked') {
+					res.status(401).send({ message: 'Unauthorized Access' });
+				} else {
+					res.status(401).send({ message: 'Unauthorized Access' });
+				}
+			})
 
-//		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-//			if (!err) {
-//				req.decoded = decoded;
-//				next();
-//			} else {
-//				res.status(401).send({ message: 'Unauthorized Access' });
-//			}
-//		});
+		//		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+		//			if (!err) {
+		//				req.decoded = decoded;
+		//				next();
+		//			} else {
+		//				res.status(401).send({ message: 'Unauthorized Access' });
+		//			}
+		//		});
 	}
 };
 
