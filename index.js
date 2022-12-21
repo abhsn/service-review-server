@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 	res.status(200).send('Service Review server is running...');
 });
 
-const firebaseCredential = require(process.env.GOOGLE_APPLICATION_CREDENTIALS);
+const firebaseCredential = require(`./${process.env.GOOGLE_APPLICATION_CREDENTIALS}`);
 
 initializeApp({
 	credential: admin.credential.cert(firebaseCredential),
