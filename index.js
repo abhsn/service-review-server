@@ -3,9 +3,9 @@ const { MongoClient, ObjectId } = require('mongodb');
 const app = express();
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
-const { initializeApp, applicationDefault } = require('firebase-admin/app');
-const admin = require('firebase-admin');
-const { getAuth } = require('firebase-admin/auth');
+// const { initializeApp, applicationDefault } = require('firebase-admin/app');
+// const admin = require('firebase-admin');
+// const { getAuth } = require('firebase-admin/auth');
 const port = 5000;
 
 app.use(cors());
@@ -18,11 +18,11 @@ app.get('/', (req, res) => {
 	res.status(200).send('Service Review server is running...');
 });
 
-const firebaseCredential = require(`./${process.env.GOOGLE_APPLICATION_CREDENTIALS}`);
+// const firebaseCredential = require(`./${process.env.GOOGLE_APPLICATION_CREDENTIALS}`);
 
-initializeApp({
-	credential: admin.credential.cert(firebaseCredential)
-})
+// initializeApp({
+// 	credential: admin.credential.cert(firebaseCredential)
+// })
 
 const client = new MongoClient(process.env.MONGO_URI);
 
@@ -33,18 +33,18 @@ const verifyJWT = (req, res, next) => {
 	} else {
 		const token = req.headers.authorization.split(' ')[1];
 
-		getAuth().verifyIdToken(token, true)
-			.then(payload => {
-				req.decoded = payload;
-				next();
-			})
-			.catch(err => {
-				if (err.code === 'auth/id-token-revoked') {
-					res.status(401).send({ message: 'Unauthorized Access' });
-				} else {
-					res.status(401).send({ message: 'Unauthorized Access' });
-				}
-			})
+		// getAuth().verifyIdToken(token, true)
+		// 	.then(payload => {
+		// 		req.decoded = payload;
+		// 		next();
+		// 	})
+		// 	.catch(err => {
+		// 		if (err.code === 'auth/id-token-revoked') {
+		// 			res.status(401).send({ message: 'Unauthorized Access' });
+		// 		} else {
+		// 			res.status(401).send({ message: 'Unauthorized Access' });
+		// 		}
+		// 	})
 
 		// jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
 		// 	if (!err) {

@@ -1,4 +1,4 @@
 /node_modules
 /.env
-# /service-review-22-firebase-adminsdk-*.json
+/service-review-22-firebase-adminsdk-*.json
 .vercel
