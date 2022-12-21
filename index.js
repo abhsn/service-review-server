@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
 
 initializeApp({
 	credential: applicationDefault(),
-	projectId: 'service-review-22'
+	projectId: process.env.PROJECT_ID
 })
 
 const client = new MongoClient(process.env.MONGO_URI);
