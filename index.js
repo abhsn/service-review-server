@@ -20,6 +20,8 @@ app.get('/', (req, res) => {
 
 const firebaseCredential = require(`./${process.env.GOOGLE_APPLICATION_CREDENTIALS}`);
 
+console.log(firebaseCredential);
+
 initializeApp({
 	credential: admin.credential.cert(firebaseCredential),
 	projectId: process.env.PROJECT_ID
