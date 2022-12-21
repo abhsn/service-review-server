@@ -46,14 +46,14 @@ const verifyJWT = (req, res, next) => {
 		// 		}
 		// 	})
 
-		// jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-		// 	if (!err) {
-		// 		req.decoded = decoded;
-		// 		next();
-		// 	} else {
-		// 		res.status(401).send({ message: 'Unauthorized Access' });
-		// 	}
-		// });
+		jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+			if (!err) {
+				req.decoded = decoded;
+				next();
+			} else {
+				res.status(401).send({ message: 'Unauthorized Access' });
+			}
+		});
 	}
 };
 
